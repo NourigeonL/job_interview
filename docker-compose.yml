@@ -1,0 +1,15 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: api:0.1
+    env_file:
+     - ./.env
+    ports:
+      - 8080:80
+    networks:
+      - job_interview
+
+networks:
+  job_interview:
