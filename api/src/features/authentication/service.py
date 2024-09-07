@@ -1,5 +1,5 @@
-from src.core.features.authentication.interfaces import UserRegistrationForm, User, IAuthenticationService, IAuthenticationRepository, IPasswordManager, LoginForm
-from src.core.common import exceptions as ex
+from api.src.features.authentication.interfaces import UserRegistrationForm, User, IAuthenticationService, IAuthenticationRepository, IPasswordManager, LoginForm
+from common import exceptions as ex
 
 class AuthenticationService(IAuthenticationService):
     

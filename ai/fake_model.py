@@ -1,4 +1,4 @@
-from src.core.common import exceptions as ex
+from common import exceptions as ex
 import time
 import random
 

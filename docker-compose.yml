@@ -2,10 +2,10 @@ services:
   api:
     build:
       context: .
-      dockerfile: Dockerfile
-    image: api:0.1
+      dockerfile: api/Dockerfile
+    image: api:0.2
     env_file:
-     - ./.env
+     - api/.env
     ports:
       - 8080:80
     networks:

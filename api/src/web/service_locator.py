@@ -1,5 +1,5 @@
-from src.core.features.authentication.interfaces import IAuthenticationService
-from src.core.common import exceptions as ex
+from api.src.features.authentication.interfaces import IAuthenticationService
+from common import exceptions as ex
 
 class ServiceLocator:
     __global_variables = {}

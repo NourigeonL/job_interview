@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from src.web.service_locator import service_locator
-from src.core.features.authentication.interfaces import UserRegistrationForm, LoginForm
-from src.web.auth_token_handler import Tokens, generate_tokens
+from api.src.web.service_locator import service_locator
+from api.src.features.authentication.interfaces import UserRegistrationForm, LoginForm
+from api.src.web.auth_token_handler import Tokens, generate_tokens
 from pydantic import BaseModel
 
 

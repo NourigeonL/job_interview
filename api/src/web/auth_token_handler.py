@@ -2,7 +2,7 @@ from fastapi.security import APIKeyHeader
 from fastapi import Depends, HTTPException, status
 from typing import Annotated
 from pydantic import BaseModel
-from src.core.features.authentication.interfaces import User
+from api.src.features.authentication.interfaces import User
 class UserToken(BaseModel):
     id : str
 

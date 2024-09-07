@@ -1,8 +1,8 @@
 import unittest
 import pytest
-from src.core.features.authentication.interfaces import User, IAuthenticationRepository, IPasswordManager, UserRegistrationForm, LoginForm
-from src.core.features.authentication.service import AuthenticationService
-from src.core.common import exceptions as ex
+from api.src.features.authentication.interfaces import User, IAuthenticationRepository, IPasswordManager, UserRegistrationForm, LoginForm
+from api.src.features.authentication.service import AuthenticationService
+from common import exceptions as ex
 from uuid import uuid4
 
 class FakeAuthenticationRepository(IAuthenticationRepository):
