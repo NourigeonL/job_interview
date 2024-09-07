@@ -1,0 +1,3 @@
+redis
+pydantic_settings
+pydantic

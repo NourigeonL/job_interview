@@ -1,6 +1,6 @@
 import unittest
 import pytest
-from ai.fake_model import FakeModel
+from ai.src.fake_model import FakeModel
 from common import exceptions as ex
 
 class TestFakeModel(unittest.IsolatedAsyncioTestCase):

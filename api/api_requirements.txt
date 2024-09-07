@@ -1,0 +1,6 @@
+-r ./common/common_requirements.txt
+fastapi[all]
+bcrypt
+websockets
+SQLAlchemy
+asyncpg

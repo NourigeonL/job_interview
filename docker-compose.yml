@@ -1,15 +1,77 @@
 services:
-  api:
-    build:
-      context: .
-      dockerfile: api/Dockerfile
-    image: api:0.2
-    env_file:
-     - api/.env
+  # api:
+  #   build:
+  #     context: .
+  #     dockerfile: api/Dockerfile
+  #   image: api:0.2
+  #   env_file:
+  #    - .docker.env
+  #   ports:
+  #     - 8080:80
+  #   networks:
+  #     - job_interview
+  redis:
+    image: redis:6-alpine
     ports:
-      - 8080:80
+        - 6379:6379
+    command: redis-server --databases 2
+    networks:
+      - job_interview
+    volumes:
+      - redis_data:/data
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      REDIS_HOSTS: redis
+      REDIS_HOST: redis
+      REDIS_PORT: redis:6379
+      HTTP_USER: root
+      HTTP_PASSWORD: root
+    ports:
+      - 8081:8081
+    networks:
+      - job_interview
+
+  # ai:
+  #   build:
+  #     context: .
+  #     dockerfile: ai/Dockerfile
+  #   image: ai:0.1
+  #   env_file:
+  #    - .docker.env
+  #   networks:
+  #     - job_interview
+
+  db:
+    image: postgres
+    container_name: db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - job_interview
+  
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: louis.nourigeon@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: example
     networks:
       - job_interview
 
 networks:
   job_interview:
+    driver: bridge
+
+volumes:
+  redis_data:
+  db_data:

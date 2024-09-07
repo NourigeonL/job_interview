@@ -18,11 +18,11 @@ async def verify_token(token : Annotated[str, Depends(scheme)]) -> dict:
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"}
     )
-    
+    return {"user_id" : token}
     raise credentials_exception
 
 async def generate_tokens(user : User) -> Tokens:
     return Tokens(access=str(user.id))
 
 async def get_current_user_from_token(payload : Annotated[dict, Depends(verify_token)]) -> UserToken:
-    return UserToken(id="id")
+    return UserToken(id=payload["user_id"])

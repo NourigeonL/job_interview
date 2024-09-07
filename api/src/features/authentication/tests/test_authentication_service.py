@@ -15,7 +15,7 @@ class FakeAuthenticationRepository(IAuthenticationRepository):
                 return user
         return None
     
-    async def create_or_update_user(self, user : User) -> User:
+    async def create_user(self, user : User) -> User:
         if user.id is None:
             user.id = uuid4()
             self.db.append(user)

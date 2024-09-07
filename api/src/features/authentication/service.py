@@ -17,4 +17,4 @@ class AuthenticationService(IAuthenticationService):
         if await self.repo.get_user_by_username(user_registration.username):
             raise ex.InvalidCredentialsError("This username is already taken")
         user = User(username=user_registration.username, hashed_password=self.pwd_manager.hash_password(user_registration.plain_password))
-        return await self.repo.create_or_update_user(user)
+        return await self.repo.create_user(user)
