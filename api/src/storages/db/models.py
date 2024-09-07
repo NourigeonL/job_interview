@@ -62,5 +62,9 @@ class Request(UUIDModel,RequestBase,TimestampModel, table=True):
 class RequestRead(RequestBase, UUIDModel):
     pass
 
+class RequestPatch(SQLModel):
+    input : str | None = None
+    output : str | None = None
+
 class RequestCreate(RequestBase):
     pass

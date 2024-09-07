@@ -8,7 +8,8 @@ from typing import Annotated
 from common.message_brokers.interfaces import IMessageBroker, Request
 from api.src.web.dependencies import lifespan, get_current_user, UserToken
 from fastapi.responses import HTMLResponse
-
+from api.src.storages.db.models import RequestRead, RequestPatch
+from uuid import UUID
 app = FastAPI(lifespan=lifespan)
 
 html = """
@@ -56,8 +57,24 @@ async def register(user_registration : UserRegistrationForm) -> Tokens:
     return await generate_tokens(user)
 
 @app.post("/process/")
-async def process_requests(request_form : RequestForm, background_tasks: BackgroundTasks, curren_user : Annotated[UserToken, Depends(get_current_user)]):
-    background_tasks.add_task(service_locator.process_service.process_requests, curren_user.id, request_form)
+async def process_requests(request_form : RequestForm, background_tasks: BackgroundTasks, current_user : Annotated[UserToken, Depends(get_current_user)]):
+    background_tasks.add_task(service_locator.process_service.process_requests, current_user.id, request_form)
+
+@app.get("/requests/{request_id}")
+async def get_request(request_id : UUID, current_user : Annotated[UserToken, Depends(get_current_user)]):
+    return await service_locator.crud_request.get(current_user.id, request_id)
+
+@app.get("/requests")
+async def get_all_requests(current_user : Annotated[UserToken, Depends(get_current_user)]):
+    return await service_locator.crud_request.get_all(current_user.id)
+
+@app.patch("/requests/{request_id}")
+async def patch_request(request_id : UUID, data : RequestPatch, current_user : Annotated[UserToken, Depends(get_current_user)]):
+    return await service_locator.crud_request.patch(current_user.id, request_id, data)
+
+@app.delete("/requests/{request_id}")
+async def delete_request(request_id : UUID, current_user : Annotated[UserToken, Depends(get_current_user)]):
+    return await service_locator.crud_request.delete(current_user.id, request_id)
 
 # @app.get("/responses/")
 # async def get_reponses(nb_max_response : int, msg_broker : Annotated[IMessageBroker, Depends(get_message_broker)]):
