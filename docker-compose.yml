@@ -1,15 +1,18 @@
 services:
-  # api:
-  #   build:
-  #     context: .
-  #     dockerfile: api/Dockerfile
-  #   image: api:0.2
-  #   env_file:
-  #    - .docker.env
-  #   ports:
-  #     - 8080:80
-  #   networks:
-  #     - job_interview
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    image: api:0.1
+    env_file:
+     - .docker.env
+    ports:
+      - 8080:80
+    networks:
+      - job_interview
+    depends_on:
+      - redis
+      - db
   redis:
     image: redis:6-alpine
     ports:
@@ -33,15 +36,17 @@ services:
     networks:
       - job_interview
 
-  # ai:
-  #   build:
-  #     context: .
-  #     dockerfile: ai/Dockerfile
-  #   image: ai:0.1
-  #   env_file:
-  #    - .docker.env
-  #   networks:
-  #     - job_interview
+  ai:
+    build:
+      context: .
+      dockerfile: ai/Dockerfile
+    image: ai:0.1
+    env_file:
+     - .docker.env
+    networks:
+      - job_interview
+    depends_on:
+      - redis
 
   db:
     image: postgres

@@ -30,20 +30,20 @@ class TestFakeModel(unittest.IsolatedAsyncioTestCase):
             await model(requests)
             
     async def test_should_return_string_with_more_than_min_words(self):
-        model = FakeModel(response_min_nb_words=5)
+        model = FakeModel(response_max_nb_words=5)
         requests = ["A small request"]
         responses = await model(requests)
         nb_words = len(responses[0].split())
         assert nb_words >= 5
         
     async def test_same_input_should_return_same_response(self):
-        model = FakeModel(response_min_nb_words=5)
+        model = FakeModel(response_max_nb_words=5)
         requests = ["same request", "same request"]
         responses = await model(requests)
         assert responses[0] == responses[1]
         
     async def test_different_input_should_return_different_responses(self):
-        model = FakeModel(response_min_nb_words=5)
+        model = FakeModel(response_max_nb_words=5)
         requests = ["a request", "a different request"]
         responses = await model(requests)
         assert responses[0] != responses[1]

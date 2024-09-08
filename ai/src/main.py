@@ -5,7 +5,7 @@ import asyncio
 import time
 async def main():
     message_broker = await get_message_broker()
-    model = FakeModel(max_nb_characters=settings.MAX_NB_CHARACTERS_IN_REQUEST, max_nb_words=settings.MAX_NB_WORDS_IN_REQUEST, max_batch_size=settings.MAX_BATCH_SIZE, min_duration=settings.MODEL_INFERENCE_MIN_DURATION, max_duration=settings.MODEL_INFERENCE_MAX_DURATION, simulate_duration=True, response_min_nb_words=settings.MIN_NB_WORDS_IN_RESPONSE)
+    model = FakeModel(max_nb_characters=settings.MAX_NB_CHARACTERS_IN_REQUEST, max_nb_words=settings.MAX_NB_WORDS_IN_REQUEST, max_batch_size=settings.MAX_BATCH_SIZE, min_duration=settings.MODEL_INFERENCE_MIN_DURATION, max_duration=settings.MODEL_INFERENCE_MAX_DURATION, simulate_duration=True, response_max_nb_words=settings.MIN_NB_WORDS_IN_RESPONSE)
     
     while True:
         requests = await message_broker.receive_requests(model.max_batch_size)
