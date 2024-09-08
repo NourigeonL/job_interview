@@ -1,8 +1,8 @@
-from common.storages.db.repositories import RequestRepository, IRequestRepository
-from common.storages.cache.interfaces import ICacheStorage
+from common.storages.db.repositories import RequestRepository
 from common.storages.cache.redis import RedisCacheStorage
 from common.config import get_message_broker, settings
 from common import exceptions as ex
+from common.enums import RequestStatus
 from ai.src.fake_model import FakeModel
 import redis.asyncio as redis
 import asyncio
@@ -13,7 +13,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 logger = logging.getLogger("AI")
 logging.basicConfig(filename='ai.log', level=logging.INFO)
 
-async def main(repo : IRequestRepository):
+async def main(repo : RequestRepository):
     redis_engine = await redis.from_url(settings.REDIS_HOST, encoding="utf-8", decode_responses=True)
     cache = RedisCacheStorage(redis_engine, settings.CACHE_DURATION_MINUTES)
     message_broker = await get_message_broker()
@@ -22,19 +22,25 @@ async def main(repo : IRequestRepository):
     while True:
         requests = await message_broker.receive_requests(model.max_batch_size)
         if len(requests) > 0:
+            await repo.update_requests_status(requests, RequestStatus.IN_PROCESS)
             print(f"received {len(requests)} requests")
             inputs = [request["input"] for request in requests]
             print("inputs: ")
             print(inputs)
             try:
                 output = await model(inputs)
-                responses = [{"request_id": requests[i]["request_id"],"input":requests[i]["input"], "output":output[i], "user_id":requests[i]["user_id"]} for i in range(len(requests))]
+                
+                responses = [{"job_id":requests[i]["job_id"], "request_id": requests[i]["request_id"],"input":requests[i]["input"], "output":output[i], "user_id":requests[i]["user_id"]} for i in range(len(requests))]
                 await repo.save_responses(responses)
                 for response in responses:
                     await cache.store(response["input"], response["output"])
                 #await message_broker.send_responses(responses)
             except ex.InvalidInputError as e:
-                logger.error(f"InvalidInputError: {e}")
+                logger.warning(f"InvalidInputError: {e}")
+                await repo.update_requests_status(requests, RequestStatus.FAILED)
+            except Exception as e:
+                logger.error(f"Unexpected error: {e}")
+                await repo.update_requests_status(requests, RequestStatus.FAILED)
         time.sleep(1)
             
 if __name__ == "__main__":

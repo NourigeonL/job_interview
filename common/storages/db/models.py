@@ -2,11 +2,12 @@ from sqlalchemy import ForeignKey
 from sqlalchemy import String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy.ext.asyncio import AsyncAttrs
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, Relationship
 import uuid as uuid_pkg
 from sqlalchemy import text
 from datetime import datetime
 from common.enums import RequestStatus
+from typing import List
 
 class UUIDModel(SQLModel):
    id: uuid_pkg.UUID = Field(
@@ -38,28 +39,28 @@ class TimestampModel(SQLModel):
        }
    )
 
-class UserBase(SQLModel):
-    username : str = Field(unique=True)
-    hashed_password: str
-    
-class User(UUIDModel,UserBase, table=True):
-    __tablename__ = "users"
-    
-class UserRead(UserBase, UUIDModel):
-    pass
-
-class UserCreate(UserBase):
-    pass
 
 class RequestBase(SQLModel):
 
-    user_id : uuid_pkg.UUID = Field(default=None, foreign_key="users.id")
+    job_id: uuid_pkg.UUID = Field(foreign_key="jobs.id")
+    user_id : uuid_pkg.UUID = Field(foreign_key="users.id")
     input : str
     output : str | None = None
     status : str = RequestStatus.PENDING.value
 
 class Request(UUIDModel,RequestBase,TimestampModel, table=True):
     __tablename__ = "requests"
+    job: "Job" = Relationship(back_populates="requests")
+
+
+class JobBase(SQLModel):
+    user_id : uuid_pkg.UUID = Field(foreign_key="users.id")
+    
+
+class Job(UUIDModel,JobBase,TimestampModel, table=True):
+    __tablename__ = "jobs"
+    user : "User" = Relationship(back_populates="jobs")
+    requests : List["Request"]= Relationship(back_populates="job")
 
 class RequestRead(RequestBase, UUIDModel):
     pass
@@ -69,4 +70,18 @@ class RequestPatch(SQLModel):
     output : str | None = None
 
 class RequestCreate(RequestBase):
+    pass
+
+class UserBase(SQLModel):
+    username : str = Field(unique=True)
+    hashed_password: str
+    
+class User(UUIDModel,UserBase, table=True):
+    __tablename__ = "users"
+    jobs: List["Job"] = Relationship(back_populates="user")
+    
+class UserRead(UserBase, UUIDModel):
+    pass
+
+class UserCreate(UserBase):
     pass

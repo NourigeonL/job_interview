@@ -19,11 +19,13 @@ class IMessage(abc.ABC):
         return cls(**data)
 
 class RequestDict(TypedDict):
+    job_id : str
     request_id : str
     user_id : str
     input : str
 
 class ResponseDict(TypedDict):
+    job_id : str
     request_id : str
     user_id : str
     input : str

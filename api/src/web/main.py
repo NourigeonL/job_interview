@@ -82,8 +82,8 @@ async def register(user_registration : UserRegistrationForm) -> Tokens:
     return await generate_tokens(user)
 
 @app.post("/process/")
-async def process_requests(request_form : RequestForm, background_tasks: BackgroundTasks, current_user : Annotated[UserToken, Depends(get_current_user)]):
-    background_tasks.add_task(service_locator.process_service.process_requests, current_user.id, request_form.requests)
+async def process_requests(request_form : RequestForm, current_user : Annotated[UserToken, Depends(get_current_user)]):
+    return await service_locator.process_service.send_requests(current_user.id, request_form.requests)
 
 @app.get("/requests/{request_id}")
 async def get_request(request_id : UUID, current_user : Annotated[UserToken, Depends(get_current_user)]):
@@ -100,6 +100,14 @@ async def patch_request(request_id : UUID, data : RequestPatch, current_user : A
 @app.delete("/requests/{request_id}")
 async def delete_request(request_id : UUID, current_user : Annotated[UserToken, Depends(get_current_user)]):
     return await service_locator.crud_request.delete(current_user.id, request_id)
+
+@app.get("/jobs/{job_id}")
+async def get_job_info(job_id : UUID, current_user : Annotated[UserToken, Depends(get_current_user)]):
+    return await service_locator.crud_request.get_job_info(current_user.id, job_id)
+
+@app.get("/jobs")
+async def get_jobs_summary( current_user : Annotated[UserToken, Depends(get_current_user)]):
+    return await service_locator.crud_request.get_jobs_summary(current_user.id)
 
 @app.get("/")
 async def get():
