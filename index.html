@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Text Processing</title>
+    <script>
+        let texts = [];
+
+        async function login(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            const response = await fetch('http://localhost:8000/login/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await response.json();
+            console.log(data);
+            localStorage.setItem('token', data.access);
+        }
+
+        async function register(event) {
+            event.preventDefault();
+            const username = document.getElementById('register-username').value;
+            const plain_password = document.getElementById('register-password').value;
+
+            const response = await fetch('http://localhost:8000/register/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': 'application/json'
+                },
+                body: JSON.stringify({ username, plain_password })
+            });
+
+            const data = await response.json();
+            localStorage.setItem('token', data.access);
+        }
+
+        function addText() {
+            const textInput = document.getElementById('textInput').value;
+            if (textInput) {
+                texts.push(textInput);
+                document.getElementById('textInput').value = '';
+                updateTextList();
+            }
+        }
+
+        function updateTextList() {
+            const textList = document.getElementById('textList');
+            textList.innerHTML = texts.map(text => `<li>${text}</li>`).join('');
+        }
+
+        async function processTexts(event) {
+            event.preventDefault();
+            const token = localStorage.getItem('token');
+
+            const response = await fetch('http://localhost:8000/process/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': 'application/json',
+                    'Bearer': token
+                },
+                body: JSON.stringify({ "requests": texts })
+            });
+
+            const data = await response.json();
+            document.getElementById('responseId').innerText = `Response ID: ${data}`;
+        }
+    </script>
+</head>
+<body>
+    <h1>Register Form</h1>
+    <form onsubmit="register(event)">
+        <input type="text" id="register-username" placeholder="Username" required>
+        <input type="password" id="register-password" placeholder="Password" required>
+        <button type="submit">Register</button>
+    </form>
+    <h1>Login Form</h1>
+    <form onsubmit="login(event)">
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+
+    <h1>Process Texts</h1>
+    <input type="text" id="textInput" placeholder="Enter text">
+    <button onclick="addText()">Add Text</button>
+    <ul id="textList"></ul>
+    <form onsubmit="processTexts(event)">
+        <button type="submit">Submit Texts</button>
+    </form>
+    <div id="responseId"></div>
+
+    <h1>Get Job Info</h1>
+    <form id="jobInfoForm">
+        <label for="jobID">Job ID:</label>
+        <input type="text" id="jobID" name="jobID" required>
+        <button type="submit">Get Job Info</button>
+    </form>
+    <div id="jobInfo"></div>
+    <script>
+        document.getElementById('jobInfoForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const jobID = document.getElementById('jobID').value;
+
+            fetch(`http://localhost:8000/jobs/${jobID}`, {headers: {
+                'accept': 'application/json',
+                'Bearer': localStorage.getItem('token')
+            },})
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('jobInfo').innerText = `Job ID: ${data.job_id}, Created At: ${data.created_at}, Nb Requests: ${data.nb_requests}, Status: ${data.status}, Last Update: ${data.last_update}`;
+            });
+        });
+    </script>
+</body>
+</html>
