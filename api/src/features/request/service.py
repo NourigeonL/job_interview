@@ -34,7 +34,8 @@ class RequestService:
                 need_to_process_requests.append(request)
         if len(cached_responses) > 0:
             await self.repo.save_responses(cached_responses)
-        await self.msg_broker.send_requests(need_to_process_requests)
+        if len(need_to_process_requests) > 0:
+            await self.msg_broker.send_requests(need_to_process_requests)
         return new_job.id
             
         
