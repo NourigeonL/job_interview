@@ -6,8 +6,8 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from api.src.features.authentication.repository import AuthenticationRepository
 from api.src.features.authentication.service import AuthenticationService
 from api.src.features.authentication.password_manager import PasswordManager
-from api.src.features.process.service import ProcessService
-from api.src.features.process.crud import CRUDRequest
+from api.src.features.request.service import RequestService
+from api.src.features.request.crud import CRUDRequest
 from api.src.web.service_locator import service_locator
 from common.storages.cache.redis import RedisCacheStorage
 import redis.asyncio as redis
@@ -28,7 +28,7 @@ async def lifespan(app: FastAPI):
         auth_repo = AuthenticationRepository(engine)
         service_locator.set_authentication_service(AuthenticationService(auth_repo, PasswordManager()))
         request_repo = RequestRepository(engine)
-        service_locator.set_process_service(ProcessService(request_repo, msg_broker, cache))
+        service_locator.set_request_service(RequestService(request_repo, msg_broker, cache))
         service_locator.set_crud_request(CRUDRequest(engine))
         yield
     finally:

@@ -1,6 +1,6 @@
 from api.src.features.authentication.interfaces import IAuthenticationService
-from api.src.features.process.service import ProcessService
-from api.src.features.process.crud import CRUDRequest
+from api.src.features.request.service import RequestService
+from api.src.features.request.crud import CRUDRequest
 from common import exceptions as ex
 
 class ServiceLocator:
@@ -9,8 +9,8 @@ class ServiceLocator:
     def set_authentication_service(self, service : IAuthenticationService) -> None:
         self.__global_variables["authentication_service"] = service
         
-    def set_process_service(self, service : ProcessService) -> None:
-        self.__global_variables["process_service"] = service
+    def set_request_service(self, service : RequestService) -> None:
+        self.__global_variables["request_service"] = service
         
     def set_crud_request(self, crud : CRUDRequest) -> None:
         self.__global_variables["crud_request"] = crud
@@ -23,10 +23,10 @@ class ServiceLocator:
         return service
     
     @property
-    def process_service(self) -> ProcessService:
-        service = self.__global_variables.get("process_service")
+    def request_service(self) -> RequestService:
+        service = self.__global_variables.get("request_service")
         if not service:
-            raise ex.ServiceDoesNotExistError("There is no Process service")
+            raise ex.ServiceDoesNotExistError("There is no Request service")
         return service
     
     @property

@@ -39,7 +39,7 @@ async def register(user_registration : UserRegistrationForm) -> Tokens:
 
 @app.post("/process/")
 async def process_requests(request_form : RequestForm, current_user : Annotated[UserToken, Depends(get_current_user)]):
-    return await service_locator.process_service.send_requests(current_user.id, request_form.requests)
+    return await service_locator.request_service.send_requests(current_user.id, request_form.requests)
 
 @app.get("/requests/{request_id}")
 async def get_request(request_id : UUID, current_user : Annotated[UserToken, Depends(get_current_user)]):

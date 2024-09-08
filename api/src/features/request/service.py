@@ -3,7 +3,7 @@ from common.message_brokers.interfaces import RequestDict, IMessageBroker, Respo
 from common.storages.cache.interfaces import ICacheStorage
 from common.storages.db.repositories import RequestRepository
 
-class ProcessService:
+class RequestService:
     
     def __init__(self, repo : RequestRepository, msg_broker : IMessageBroker, cache : ICacheStorage) -> None:
         self.repo = repo
