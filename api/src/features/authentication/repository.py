@@ -1,6 +1,6 @@
 from api.src.features.authentication.interfaces import IAuthenticationRepository, User
 from sqlalchemy.ext.asyncio import AsyncEngine, async_sessionmaker
-from api.src.storages.db import models
+from common.storages.db import models
 from sqlmodel import select
 
 class AuthenticationRepository(IAuthenticationRepository):

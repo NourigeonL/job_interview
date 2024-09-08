@@ -24,7 +24,7 @@ async def lifespan(app: FastAPI):
     redis_engine = await redis.from_url(settings.REDIS_HOST, encoding="utf-8", decode_responses=True)
     msg_broker = RedisMessageBroker(redis_engine)
     cache = RedisCacheStorage(redis_engine, settings.CACHE_DURATION_MINUTES)
-    engine = create_async_engine(f"postgresql+asyncpg://{settings.POSTGRESSQL_USER}:{settings.POSTGRESQL_PASSWORD}@{settings.POSTGRESQL_HOST}/{settings.POSTGRESSQL_DB}", echo=True)
+    engine = create_async_engine(f"postgresql+asyncpg://{settings.POSTGRESSQL_USER}:{settings.POSTGRESQL_PASSWORD}@{settings.POSTGRESQL_HOST}/{settings.POSTGRESQL_DB}", echo=True)
     auth_repo = AuthenticationRepository(engine)
     service_locator.set_authentication_service(AuthenticationService(auth_repo, PasswordManager()))
     request_repo = RequestRepository(engine)

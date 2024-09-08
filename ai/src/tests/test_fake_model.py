@@ -23,18 +23,12 @@ class TestFakeModel(unittest.IsolatedAsyncioTestCase):
         with pytest.raises(ex.InvalidInputError):
             await model(requests)
             
-    async def test_should_raise_error_if_nb_words_is_more_than_max_words(self):
-        model = FakeModel(max_nb_words=2)
-        requests = ["This request has too many words"]
-        with pytest.raises(ex.InvalidInputError):
-            await model(requests)
-            
-    async def test_should_return_string_with_more_than_min_words(self):
+    async def test_should_return_string_with_less_than_max_words(self):
         model = FakeModel(response_max_nb_words=5)
         requests = ["A small request"]
         responses = await model(requests)
         nb_words = len(responses[0].split())
-        assert nb_words >= 5
+        assert nb_words <= 5
         
     async def test_same_input_should_return_same_response(self):
         model = FakeModel(response_max_nb_words=5)

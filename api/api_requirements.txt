@@ -2,7 +2,5 @@
 fastapi[all]
 bcrypt
 websockets
-SQLAlchemy
 asyncpg
-sqlmodel
-alembic
+python-jose

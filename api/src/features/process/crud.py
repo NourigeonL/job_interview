@@ -1,7 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncEngine, async_sessionmaker
-from api.src.storages.db.models import Request, RequestRead, RequestPatch
+from common.storages.db.models import Request, RequestRead, RequestPatch
 from sqlmodel import select, and_, delete
 from uuid import UUID
+
 class CRUDRequest:
     
     def __init__(self, engine : AsyncEngine) -> None:

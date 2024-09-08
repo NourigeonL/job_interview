@@ -1,15 +1,32 @@
-from fastapi import FastAPI, Depends, WebSocket, BackgroundTasks
+from fastapi import FastAPI, Depends, WebSocket, BackgroundTasks, Query
 from api.src.web.service_locator import service_locator
 from api.src.features.authentication.interfaces import UserRegistrationForm, LoginForm
-from api.src.features.process.interfaces import RequestForm
 from api.src.web.auth_token_handler import Tokens, generate_tokens
-from common.config import get_message_broker
+from common.config import settings
 from typing import Annotated
 from common.message_brokers.interfaces import IMessageBroker, Request
 from api.src.web.dependencies import lifespan, get_current_user, UserToken
 from fastapi.responses import HTMLResponse
 from api.src.storages.db.models import RequestRead, RequestPatch
 from uuid import UUID
+from pydantic import BaseModel, Field, field_validator, ValidationInfo
+
+class RequestForm(BaseModel):
+    requests : list[str] = Field(..., max_length=settings.BATCH_SIZE)
+    
+    @field_validator('requests')
+    @classmethod
+    def validate_requests(cls, v: list[str]) -> list[str]:
+        if len(v) > settings.MAX_NB_REQUESTS:
+            raise ValueError(f'The requests list can have a maximum of {settings.MAX_NB_REQUESTS} items')
+        
+        for item in v:
+            if not 1 <= len(item) <= settings.MAX_NB_CHARACTERS_IN_REQUEST:
+                raise ValueError(f'Each request must be between 1 and {settings.MAX_NB_CHARACTERS_IN_REQUEST} characters long (got {len(item)} characters long string)')
+        
+        return v
+
+
 app = FastAPI(lifespan=lifespan)
 
 html = """
@@ -75,10 +92,6 @@ async def patch_request(request_id : UUID, data : RequestPatch, current_user : A
 @app.delete("/requests/{request_id}")
 async def delete_request(request_id : UUID, current_user : Annotated[UserToken, Depends(get_current_user)]):
     return await service_locator.crud_request.delete(current_user.id, request_id)
-
-# @app.get("/responses/")
-# async def get_reponses(nb_max_response : int, msg_broker : Annotated[IMessageBroker, Depends(get_message_broker)]):
-#     return await msg_broker.receive_reponses(nb_max_response)
 
 @app.get("/")
 async def get():
