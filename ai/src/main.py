@@ -8,10 +8,10 @@ import redis.asyncio as redis
 import asyncio
 import time
 import logging
+from common.logger import Logger
 from sqlalchemy.ext.asyncio import create_async_engine
 
-logger = logging.getLogger("AI")
-logging.basicConfig(filename='ai.log', level=logging.INFO)
+logger = Logger(name="ai", prefix="ai", log_level=settings.LOG_LEVEL, log_dir="./logs").get_logger()
 
 async def main(repo : RequestRepository):
     redis_engine = await redis.from_url(settings.REDIS_HOST, encoding="utf-8", decode_responses=True)
@@ -23,10 +23,9 @@ async def main(repo : RequestRepository):
         requests = await message_broker.receive_requests(model.max_batch_size)
         if len(requests) > 0:
             await repo.update_requests_status(requests, RequestStatus.IN_PROCESS)
-            print(f"received {len(requests)} requests")
+            logger.debug(f"received {len(requests)} requests")
             inputs = [request["input"] for request in requests]
-            print("inputs: ")
-            print(inputs)
+            logger.debug(f"inputs: {inputs}")
             try:
                 output = await model(inputs)
                 
@@ -45,7 +44,7 @@ async def main(repo : RequestRepository):
             
 if __name__ == "__main__":
     try:
-        engine = create_async_engine(f"postgresql+asyncpg://{settings.POSTGRESSQL_USER}:{settings.POSTGRESQL_PASSWORD}@{settings.POSTGRESQL_HOST}/{settings.POSTGRESQL_DB}", echo=True)
+        engine = create_async_engine(f"postgresql+asyncpg://{settings.POSTGRESSQL_USER}:{settings.POSTGRESQL_PASSWORD}@{settings.POSTGRESQL_HOST}/{settings.POSTGRESQL_DB}", echo=False)
         repo = RequestRepository(engine)
         asyncio.run(main(repo))
     except KeyboardInterrupt:

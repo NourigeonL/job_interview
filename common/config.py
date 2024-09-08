@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     POSTGRESQL_PASSWORD : str = "admin"
     POSTGRESQL_DB : str  = "db"
     JWT_SECRET : str = ""
+    LOG_LEVEL : str = "DEBUG"
     
 settings = Settings()
 

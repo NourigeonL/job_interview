@@ -1,15 +1,13 @@
-from fastapi import FastAPI, Depends, WebSocket, BackgroundTasks, Query, WebSocketException, status
+from fastapi import FastAPI, Depends
 from api.src.web.service_locator import service_locator
 from api.src.features.authentication.interfaces import UserRegistrationForm, LoginForm
 from api.src.web.auth_token_handler import Tokens, generate_tokens
 from common.config import settings
 from typing import Annotated
-from common.message_brokers.interfaces import IMessageBroker, RequestDict
 from api.src.web.dependencies import lifespan, get_current_user, UserToken
-from fastapi.responses import HTMLResponse
-from common.storages.db.models import RequestRead, RequestPatch
+from common.storages.db.models import RequestPatch
 from uuid import UUID
-from pydantic import BaseModel, Field, field_validator, ValidationInfo
+from pydantic import BaseModel, Field, field_validator
 
 class RequestForm(BaseModel):
     requests : list[str] = Field(..., max_length=settings.BATCH_SIZE)
@@ -28,48 +26,6 @@ class RequestForm(BaseModel):
 
 
 app = FastAPI(lifespan=lifespan)
-
-html = """
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Chat</title>
-    </head>
-    <body>
-        <h1>WebSocket Notification</h1>
-        <form action="" onsubmit="sendMessage(event)">
-            <label>Token: <input type="text" id="token" autocomplete="off" value="some-key-token"/></label>
-            <button onclick="connect(event)">Connect</button>
-            <hr>
-            <label>Message: <input type="text" id="messageText" autocomplete="off"/></label>
-            <button>Send</button>
-        </form>
-        <ul id='messages'>
-        </ul>
-        <script>
-        var ws = null;
-            function connect(event) {
-                var token = document.getElementById("token")
-                ws = new WebSocket("ws://localhost:8000/ws?token=" + token.value);
-                ws.onmessage = function(event) {
-                    var messages = document.getElementById('messages')
-                    var message = document.createElement('li')
-                    var content = document.createTextNode(event.data)
-                    message.appendChild(content)
-                    messages.appendChild(message)
-                };
-                event.preventDefault()
-            }
-            function sendMessage(event) {
-                var input = document.getElementById("messageText")
-                ws.send(input.value)
-                input.value = ''
-                event.preventDefault()
-            }
-        </script>
-    </body>
-</html>
-"""
 
 @app.post("/login/")
 async def log_in(login_form : LoginForm) -> Tokens:
@@ -108,22 +64,3 @@ async def get_job_info(job_id : UUID, current_user : Annotated[UserToken, Depend
 @app.get("/jobs")
 async def get_jobs_summary( current_user : Annotated[UserToken, Depends(get_current_user)]):
     return await service_locator.crud_request.get_jobs_summary(current_user.id)
-
-@app.get("/")
-async def get():
-    return HTMLResponse(html)
-
-
-async def get_token(
-    websocket: WebSocket,
-    token: Annotated[str | None, Query()] = None
-):
-    if token is None:
-        raise WebSocketException(code=status.WS_1008_POLICY_VIOLATION)
-    return token
-
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket, token: Annotated[str, Depends(get_token)]):
-    while True:
-        data = await websocket.receive_text()
-        await websocket.send_text(f"Message text was: {data}")

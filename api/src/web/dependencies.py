@@ -3,7 +3,6 @@ from .auth_token_handler import get_current_user_from_token, UserToken
 from typing import Annotated
 from contextlib import asynccontextmanager
 from sqlalchemy.ext.asyncio import create_async_engine
-from sqlmodel import SQLModel
 from api.src.features.authentication.repository import AuthenticationRepository
 from api.src.features.authentication.service import AuthenticationService
 from api.src.features.authentication.password_manager import PasswordManager
