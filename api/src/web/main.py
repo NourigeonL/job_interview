@@ -4,8 +4,9 @@ from api.src.features.authentication.interfaces import UserRegistrationForm, Log
 from api.src.web.auth_token_handler import Tokens, generate_tokens
 from common.config import settings
 from typing import Annotated
-from api.src.web.dependencies import lifespan, get_current_user, UserToken
+from api.src.web.dependencies import lifespan, get_current_user, UserToken, exception_handler
 from common.storages.db.models import RequestPatch
+from common.exceptions import GenericError
 from uuid import UUID
 from pydantic import BaseModel, Field, field_validator
 
@@ -26,6 +27,8 @@ class RequestForm(BaseModel):
 
 
 app = FastAPI(lifespan=lifespan)
+
+app.add_exception_handler(GenericError, exception_handler)
 
 @app.post("/login/")
 async def log_in(login_form : LoginForm) -> Tokens:

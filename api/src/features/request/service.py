@@ -9,9 +9,17 @@ class RequestService:
         self.repo = repo
         self.msg_broker = msg_broker
         self.cache = cache
-        self.stop = False
     
     async def send_requests(self, user_id: UUID, requests : list[str]) -> UUID:
+        """If a request is cached, save the response in the db directly, else send to the AI for processing
+
+        Args:
+            user_id (UUID): The user id
+            requests (list[str]): The list of input to process
+
+        Returns:
+            UUID: job id
+        """
         need_to_process_requests : list[RequestDict] = []
         cached_responses : list[ResponseDict]= []
         new_job = await self.repo.create_job(user_id)

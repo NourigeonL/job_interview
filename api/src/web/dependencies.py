@@ -1,4 +1,5 @@
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, Request, status
+from fastapi.responses import JSONResponse
 from .auth_token_handler import get_current_user_from_token, UserToken
 from typing import Annotated
 from contextlib import asynccontextmanager
@@ -14,9 +15,16 @@ import redis.asyncio as redis
 from common.message_brokers.redis import RedisMessageBroker
 from common.storages.db.repositories import RequestRepository
 from common.config import settings
+from common.exceptions import GenericError
+
+
+async def exception_handler(request: Request, e : GenericError):
+    return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error_code": e.code, "error":e.message})
 
 async def get_current_user(user_token : Annotated[UserToken, Depends(get_current_user_from_token)]) -> UserToken:
     return user_token
+
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
