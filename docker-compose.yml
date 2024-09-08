@@ -47,8 +47,24 @@ services:
       - job_interview
     depends_on:
       - redis
+      - db
     volumes:
       - ai_logs:/app/logs
+
+  ai2:
+    build:
+      context: .
+      dockerfile: ai/Dockerfile
+    image: ai:1
+    env_file:
+     - .docker.env
+    networks:
+      - job_interview
+    depends_on:
+      - redis
+      - db
+    volumes:
+      - ai2_logs:/app/logs
 
   db:
     image: postgres
@@ -83,3 +99,4 @@ volumes:
   redis_data:
   db_data:
   ai_logs:
+  ai2_logs:
