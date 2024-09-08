@@ -18,11 +18,13 @@ class IMessage(abc.ABC):
     def from_dict(cls : type[T], data : dict) -> T:
         return cls(**data)
 
-class Request(TypedDict):
+class RequestDict(TypedDict):
+    request_id : str
     user_id : str
     input : str
 
-class Response(TypedDict):
+class ResponseDict(TypedDict):
+    request_id : str
     user_id : str
     input : str
     output : str
@@ -30,15 +32,15 @@ class Response(TypedDict):
 class IMessageBroker(abc.ABC):
     
     @abc.abstractmethod
-    async def send_requests(self, requests : list[Request]) -> None:...
+    async def send_requests(self, requests : list[RequestDict]) -> None:...
     
     @abc.abstractmethod
-    async def receive_requests(self, batch_size : int) -> list[Request]:...
+    async def receive_requests(self, batch_size : int) -> list[RequestDict]:...
     
     @abc.abstractmethod
-    async def send_responses(self, reponses : list[Response]) -> None:...
+    async def send_responses(self, reponses : list[ResponseDict]) -> None:...
     
     @abc.abstractmethod
-    async def receive_reponses(self, batch_size : int) -> list[Response]:...
+    async def receive_reponses(self, batch_size : int) -> list[ResponseDict]:...
     
     

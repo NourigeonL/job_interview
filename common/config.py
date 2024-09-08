@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     POSTGRESSQL_USER : str = "admin"
     POSTGRESQL_PASSWORD : str = "admin"
     POSTGRESQL_DB : str  = "db"
+    JWT_SECRET : str = ""
     
 settings = Settings()
 

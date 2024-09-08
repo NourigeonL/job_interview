@@ -1,3 +1,6 @@
 redis
 pydantic_settings
 pydantic
+sqlmodel
+alembic
+SQLAlchemy
