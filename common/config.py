@@ -25,7 +25,5 @@ class Settings(BaseSettings):
     
 settings = Settings()
 
-print(settings)
-
 async def get_message_broker() -> IMessageBroker:
     return RedisMessageBroker(await redis.from_url(settings.REDIS_HOST, encoding="utf-8", decode_responses=True))

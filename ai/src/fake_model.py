@@ -21,7 +21,6 @@ class FakeModel:
             
             if len(request) > self.max_nb_characters:
                 raise ex.InvalidInputError(f"Request should be maximum {self.max_nb_characters} characters")
-            print(request)
             response = request + " " + "word " * self.response_max_nb_words
             responses.append(" ".join((response.split())[0:self.response_max_nb_words]))
         if self.simulate_duration:

@@ -12,7 +12,6 @@ class RedisMessageBroker(IMessageBroker):
         new_requests = await self.db.rpop(self.input_queue, batch_size)
         if not new_requests:
             return []
-        print(f"new_requests : {new_requests}")
         return [json.loads(r) for r in new_requests]
     
     async def receive_reponses(self, batch_size: int) -> list[ResponseDict]:

@@ -31,7 +31,6 @@ class TestRedisPubSub(unittest.IsolatedAsyncioTestCase):
         request2 : RequestDict = {"input" : "other value"}
         await self.r.lpush("input", json.dumps(request1), json.dumps(request2))
         new_requests = await self.r.rpop("input", 10)
-        print(new_requests)
         assert len(new_requests) == 2, new_requests
         assert json.loads(new_requests[0]) == request1
         assert json.loads(new_requests[1]) == request2
@@ -48,7 +47,6 @@ class TestRedisPubSub(unittest.IsolatedAsyncioTestCase):
         request1 : RequestDict = {"input" : "some value"}
         await self.r.lpush("input", json.dumps(request1))
         new_requests = await self.r.rpop("input", 10)
-        print(new_requests)
         assert isinstance(new_requests, list), new_requests
         assert len(new_requests) == 1, new_requests
         

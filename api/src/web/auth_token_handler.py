@@ -34,5 +34,4 @@ async def generate_tokens(user : User) -> Tokens:
     return Tokens(access=encoded_jwt)
 
 async def get_current_user_from_token(payload : Annotated[dict, Depends(verify_token)]) -> UserToken:
-    print(f"payload: {payload}")
     return UserToken(id=payload["user_id"])
