@@ -41,9 +41,8 @@ class TimestampModel(SQLModel):
 
 
 class RequestBase(SQLModel):
-
     job_id: uuid_pkg.UUID = Field(foreign_key="jobs.id")
-    user_id : uuid_pkg.UUID = Field(foreign_key="users.id")
+    user_id : uuid_pkg.UUID = Field(index=True)
     input : str
     output : str | None = None
     status : str = RequestStatus.PENDING.value
@@ -54,23 +53,16 @@ class Request(UUIDModel,RequestBase,TimestampModel, table=True):
 
 
 class JobBase(SQLModel):
-    user_id : uuid_pkg.UUID = Field(foreign_key="users.id")
+    user_id : uuid_pkg.UUID = Field(index=True)
     
 
 class Job(UUIDModel,JobBase,TimestampModel, table=True):
     __tablename__ = "jobs"
-    user : "User" = Relationship(back_populates="jobs")
     requests : List["Request"]= Relationship(back_populates="job")
-
-class RequestRead(RequestBase, UUIDModel):
-    pass
 
 class RequestPatch(SQLModel):
     input : str | None = None
     output : str | None = None
-
-class RequestCreate(RequestBase):
-    pass
 
 class UserBase(SQLModel):
     username : str = Field(unique=True)
@@ -78,10 +70,4 @@ class UserBase(SQLModel):
     
 class User(UUIDModel,UserBase, table=True):
     __tablename__ = "users"
-    jobs: List["Job"] = Relationship(back_populates="user")
     
-class UserRead(UserBase, UUIDModel):
-    pass
-
-class UserCreate(UserBase):
-    pass
