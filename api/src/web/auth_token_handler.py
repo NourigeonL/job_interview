@@ -14,20 +14,17 @@ scheme = APIKeyHeader(name="Bearer")
 class Tokens(BaseModel):
     access : str
 
-async def get_payload_from_token(token : str) -> dict:
-    pass
-
 async def verify_token(token : Annotated[str, Depends(scheme)]) -> dict:
-    headers = jwt.get_unverified_headers(token)
-    claims = jwt.get_unverified_claims(token)
 
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"}
     )
-    return jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
-    raise credentials_exception
+    try:
+        return jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
+    except JWTError:
+        raise credentials_exception
 
 async def generate_tokens(user : UserDto) -> Tokens:
     encoded_jwt = jwt.encode({"user_id": str(user.id)}, settings.JWT_SECRET, algorithm="HS256")
