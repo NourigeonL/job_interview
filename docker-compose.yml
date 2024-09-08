@@ -52,9 +52,6 @@ services:
       - ai_logs:/app/logs
 
   ai2:
-    build:
-      context: .
-      dockerfile: ai/Dockerfile
     image: ai:1
     env_file:
      - .docker.env
@@ -63,6 +60,7 @@ services:
     depends_on:
       - redis
       - db
+      - ai
     volumes:
       - ai2_logs:/app/logs
 

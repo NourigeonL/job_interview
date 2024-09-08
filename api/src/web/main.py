@@ -5,7 +5,7 @@ from api.src.web.auth_token_handler import Tokens, generate_tokens
 from common.config import settings
 from typing import Annotated
 from api.src.web.dependencies import lifespan, get_current_user, UserToken, exception_handler
-from common.storages.db.models import RequestPatch
+from storages.db.models import RequestPatch
 from common.exceptions import GenericError
 from uuid import UUID
 from pydantic import BaseModel, Field, field_validator

@@ -2,6 +2,8 @@ FROM python:3.12-slim-bullseye
 
 WORKDIR /app
 COPY common /app/common
+COPY message_brokers /app/message_brokers
+COPY storages /app/storages
 COPY api/src /app/api/src
 COPY api/api_requirements.txt /app
 RUN python -m venv /opt/venv && \

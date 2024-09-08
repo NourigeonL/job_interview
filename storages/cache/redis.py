@@ -1,4 +1,4 @@
-from common.storages.cache.interfaces import ICacheStorage
+from storages.cache.interfaces import ICacheStorage
 from redis.asyncio import Redis
 
 class RedisCacheStorage(ICacheStorage):

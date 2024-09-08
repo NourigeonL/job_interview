@@ -1,6 +1,5 @@
 import abc
 from typing import TypedDict, TypeVar
-from dataclasses import dataclass
 
 T = TypeVar("T")
 

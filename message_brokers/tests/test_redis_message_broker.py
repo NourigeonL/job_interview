@@ -1,8 +1,8 @@
 import unittest
 import pytest
 import redis.asyncio as redis
-from common.message_brokers.redis import RedisMessageBroker
-from common.message_brokers.interfaces import RequestDict
+from message_brokers.redis import RedisMessageBroker
+from message_brokers.interfaces import RequestDict
 import asyncio
 import json
 class TestRedisPubSub(unittest.IsolatedAsyncioTestCase):

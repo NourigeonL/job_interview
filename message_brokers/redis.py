@@ -1,5 +1,5 @@
 from redis.asyncio import Redis
-from common.message_brokers.interfaces import IMessageBroker, RequestDict, ResponseDict
+from message_brokers.interfaces import IMessageBroker, RequestDict, ResponseDict
 import json
 class RedisMessageBroker(IMessageBroker):
 

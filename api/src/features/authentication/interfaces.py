@@ -2,7 +2,7 @@ import abc
 from pydantic import BaseModel
 from uuid import UUID
 
-class User(BaseModel):
+class UserDto(BaseModel):
     id : UUID | None = None
     username : str
     hashed_password : str
@@ -18,18 +18,18 @@ class LoginForm(BaseModel):
 class IAuthenticationRepository(abc.ABC):
     
     @abc.abstractmethod
-    async def get_user_by_username(self, username : str) -> User | None:...
+    async def get_user_by_username(self, username : str) -> UserDto | None:...
     
     @abc.abstractmethod
-    async def create_user(self, user : User) -> User:...
+    async def create_user(self, user : UserDto) -> UserDto:...
 
 class IAuthenticationService(abc.ABC):
     
     @abc.abstractmethod
-    async def log_in_user(self, login_form : LoginForm) -> User:...
+    async def log_in_user(self, login_form : LoginForm) -> UserDto:...
     
     @abc.abstractmethod
-    async def register_user(self, user_registration : UserRegistrationForm) -> User:...
+    async def register_user(self, user_registration : UserRegistrationForm) -> UserDto:...
     
 class IPasswordManager(abc.ABC):
     

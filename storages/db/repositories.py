@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncEngine, async_sessionmaker
-from common.storages.db.models import Request, Job
+from storages.db.models import Request, Job
 from sqlmodel import select, and_, update
-from common.message_brokers.interfaces import ResponseDict, RequestDict
+from message_brokers.interfaces import ResponseDict, RequestDict
 from common.enums import RequestStatus
 from uuid import UUID
 

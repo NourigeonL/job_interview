@@ -1,7 +1,7 @@
-from common.storages.db.repositories import RequestRepository
-from common.storages.cache.redis import RedisCacheStorage
-from common.config import get_message_broker, settings
-from common import exceptions as ex
+from storages.db.repositories import RequestRepository
+from storages.cache.redis import RedisCacheStorage
+from message_brokers.redis import RedisMessageBroker
+from common.config import settings
 from common.enums import RequestStatus
 import redis.asyncio as redis
 import asyncio
@@ -15,7 +15,7 @@ async def main(repo : RequestRepository):
     async with redis.from_url(settings.REDIS_HOST, encoding="utf-8", decode_responses=True) as redis_engine:
         redis_engine = await redis.from_url(settings.REDIS_HOST, encoding="utf-8", decode_responses=True)
         cache = RedisCacheStorage(redis_engine, settings.CACHE_DURATION_MINUTES)
-        message_broker = await get_message_broker()
+        message_broker = RedisMessageBroker(await redis.from_url(settings.REDIS_HOST, encoding="utf-8", decode_responses=True))
         logger.info('Response Handler, waiting reponses to process')
         while True:
             responses = await message_broker.receive_reponses(settings.BATCH_SIZE)

@@ -2,7 +2,7 @@ from fastapi.security import APIKeyHeader
 from fastapi import Depends, HTTPException, status
 from typing import Annotated
 from pydantic import BaseModel
-from api.src.features.authentication.interfaces import User
+from api.src.features.authentication.interfaces import UserDto
 from common.config import settings
 from jose import jwt, JWTError
 
@@ -29,7 +29,7 @@ async def verify_token(token : Annotated[str, Depends(scheme)]) -> dict:
     return jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
     raise credentials_exception
 
-async def generate_tokens(user : User) -> Tokens:
+async def generate_tokens(user : UserDto) -> Tokens:
     encoded_jwt = jwt.encode({"user_id": str(user.id)}, settings.JWT_SECRET, algorithm="HS256")
     return Tokens(access=encoded_jwt)
 

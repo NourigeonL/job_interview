@@ -1,1 +1,4 @@
 -r ./common/common_requirements.txt
+-r ./message_brokers/message_broker_requirements.txt
+-r ./storages/cache/cache_requirements.txt
+-r ./storages/db/db_requirements.txt

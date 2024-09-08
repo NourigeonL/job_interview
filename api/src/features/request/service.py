@@ -1,7 +1,7 @@
 from uuid import UUID
-from common.message_brokers.interfaces import RequestDict, IMessageBroker, ResponseDict
-from common.storages.cache.interfaces import ICacheStorage
-from common.storages.db.repositories import RequestRepository
+from message_brokers.interfaces import RequestDict, IMessageBroker, ResponseDict
+from storages.cache.interfaces import ICacheStorage
+from storages.db.repositories import RequestRepository
 
 class RequestService:
     

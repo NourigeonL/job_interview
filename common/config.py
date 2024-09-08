@@ -1,7 +1,5 @@
 from pydantic_settings import BaseSettings
 from pydantic import ConfigDict
-from common.message_brokers.interfaces import IMessageBroker
-from common.message_brokers.redis import RedisMessageBroker
 import redis.asyncio as redis
 class Settings(BaseSettings):
     
@@ -24,6 +22,3 @@ class Settings(BaseSettings):
     LOG_LEVEL : str = "DEBUG"
     
 settings = Settings()
-
-async def get_message_broker() -> IMessageBroker:
-    return RedisMessageBroker(await redis.from_url(settings.REDIS_HOST, encoding="utf-8", decode_responses=True))

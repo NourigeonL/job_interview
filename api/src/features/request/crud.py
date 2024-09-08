@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncEngine, async_sessionmaker
-from common.storages.db.models import Request, RequestPatch, Job
+from storages.db.models import Request, RequestPatch, Job
 from sqlmodel import select, and_, delete, desc
 from uuid import UUID
 from common.enums import RequestStatus

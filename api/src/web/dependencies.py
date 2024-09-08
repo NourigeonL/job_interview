@@ -10,10 +10,11 @@ from api.src.features.authentication.password_manager import PasswordManager
 from api.src.features.request.service import RequestService
 from api.src.features.request.crud import CRUDRequest
 from api.src.web.service_locator import service_locator
-from common.storages.cache.redis import RedisCacheStorage
+from storages.cache.redis import RedisCacheStorage
 import redis.asyncio as redis
-from common.message_brokers.redis import RedisMessageBroker
-from common.storages.db.repositories import RequestRepository
+from message_brokers.interfaces import IMessageBroker
+from message_brokers.redis import RedisMessageBroker
+from storages.db.repositories import RequestRepository
 from common.config import settings
 from common.exceptions import GenericError, ServiceDoesNotExistError
 
@@ -25,8 +26,6 @@ async def exception_handler(request: Request, e : GenericError):
 
 async def get_current_user(user_token : Annotated[UserToken, Depends(get_current_user_from_token)]) -> UserToken:
     return user_token
-
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

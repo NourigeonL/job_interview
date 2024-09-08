@@ -1,21 +1,21 @@
 import unittest
 import pytest
-from api.src.features.authentication.interfaces import User, IAuthenticationRepository, IPasswordManager, UserRegistrationForm, LoginForm
+from api.src.features.authentication.interfaces import UserDto, IAuthenticationRepository, IPasswordManager, UserRegistrationForm, LoginForm
 from api.src.features.authentication.service import AuthenticationService
 from common import exceptions as ex
 from uuid import uuid4
 
 class FakeAuthenticationRepository(IAuthenticationRepository):
     def __init__(self) -> None:
-        self.db : list[User] = []
+        self.db : list[UserDto] = []
     
-    async def get_user_by_username(self, username: str) -> User | None:
+    async def get_user_by_username(self, username: str) -> UserDto | None:
         for user in self.db:
             if user.username == username:
                 return user
         return None
     
-    async def create_user(self, user : User) -> User:
+    async def create_user(self, user : UserDto) -> UserDto:
         if user.id is None:
             user.id = uuid4()
             self.db.append(user)
@@ -42,7 +42,7 @@ class TestAuthenticationService(unittest.IsolatedAsyncioTestCase):
         self.repo = FakeAuthenticationRepository()
         self.pwd_manager = FakePasswordManager()
         self.service = AuthenticationService(self.repo, self.pwd_manager)
-        self.repo.db.append(User(id=uuid4(), username="user1", hashed_password="password"))
+        self.repo.db.append(UserDto(id=uuid4(), username="user1", hashed_password="password"))
         
     async def test_should_raise_error_if_username_does_not_exist(self):
         with pytest.raises(ex.InvalidCredentialsError):

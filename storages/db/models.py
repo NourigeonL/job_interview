@@ -1,13 +1,8 @@
-from sqlalchemy import ForeignKey
-from sqlalchemy import String
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlmodel import Field, SQLModel, Relationship
 import uuid as uuid_pkg
 from sqlalchemy import text
 from datetime import datetime
 from common.enums import RequestStatus
-from typing import List
 
 class UUIDModel(SQLModel):
    id: uuid_pkg.UUID = Field(
@@ -58,7 +53,7 @@ class JobBase(SQLModel):
 
 class Job(UUIDModel,JobBase,TimestampModel, table=True):
     __tablename__ = "jobs"
-    requests : List["Request"]= Relationship(back_populates="job")
+    requests : list["Request"]= Relationship(back_populates="job")
 
 class RequestPatch(SQLModel):
     input : str | None = None
