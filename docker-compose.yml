@@ -66,6 +66,21 @@ services:
     volumes:
       - ai2_logs:/app/logs
 
+  result_handler:
+    build:
+      context: .
+      dockerfile: result_handler/Dockerfile
+    image: result_handler:1
+    env_file:
+     - .docker.env
+    networks:
+      - job_interview
+    depends_on:
+      - redis
+      - db
+    volumes:
+      - result_handler_logs:/app/logs
+
   db:
     image: postgres
     container_name: db
@@ -100,3 +115,4 @@ volumes:
   db_data:
   ai_logs:
   ai2_logs:
+  result_handler_logs:

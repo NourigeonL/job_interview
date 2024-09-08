@@ -23,13 +23,11 @@ class RequestDict(TypedDict):
     request_id : str
     user_id : str
     input : str
+    status : str
 
-class ResponseDict(TypedDict):
-    job_id : str
-    request_id : str
-    user_id : str
-    input : str
+class ResponseDict(RequestDict):
     output : str
+
 
 class IMessageBroker(abc.ABC):
     
