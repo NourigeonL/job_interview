@@ -2,5 +2,4 @@
 fastapi[all]
 bcrypt
 websockets
-asyncpg
 python-jose

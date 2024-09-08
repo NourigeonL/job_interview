@@ -3,11 +3,11 @@ services:
     build:
       context: .
       dockerfile: api/Dockerfile
-    image: api:0.1
+    image: api:1
     env_file:
      - .docker.env
     ports:
-      - 8080:80
+      - 8000:80
     networks:
       - job_interview
     depends_on:
@@ -40,13 +40,15 @@ services:
     build:
       context: .
       dockerfile: ai/Dockerfile
-    image: ai:0.1
+    image: ai:1
     env_file:
      - .docker.env
     networks:
       - job_interview
     depends_on:
       - redis
+    volumes:
+      - ai_logs:/app/logs
 
   db:
     image: postgres
@@ -80,3 +82,4 @@ networks:
 volumes:
   redis_data:
   db_data:
+  ai_logs:

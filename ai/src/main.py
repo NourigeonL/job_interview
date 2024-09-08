@@ -43,9 +43,9 @@ async def main(repo : RequestRepository):
         time.sleep(1)
             
 if __name__ == "__main__":
+    engine = create_async_engine(f"postgresql+asyncpg://{settings.POSTGRESSQL_USER}:{settings.POSTGRESQL_PASSWORD}@{settings.POSTGRESQL_HOST}/{settings.POSTGRESQL_DB}", echo=False)
+    repo = RequestRepository(engine)
     try:
-        engine = create_async_engine(f"postgresql+asyncpg://{settings.POSTGRESSQL_USER}:{settings.POSTGRESQL_PASSWORD}@{settings.POSTGRESQL_HOST}/{settings.POSTGRESQL_DB}", echo=False)
-        repo = RequestRepository(engine)
         asyncio.run(main(repo))
     except KeyboardInterrupt:
         logger.info('AI interrupted manually')
