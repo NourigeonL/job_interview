@@ -10,24 +10,22 @@ class TestRedisPubSub(unittest.IsolatedAsyncioTestCase):
         self.r = await redis.from_url("redis://localhost/1", encoding="utf-8", decode_responses=True)
         await self.r.flushdb()
     
-    @pytest.mark.skip()
     async def test_should_publish(self):
         
         async def reader(channel: redis.client.PubSub):
             while True:
                 message = await channel.get_message(ignore_subscribe_messages=True, timeout=None)
                 if message is not None:
-                    assert message["data"] == {"input" : "Hello"}
+                    assert json.loads(message["data"]) == {"input" : "Hello"}
                     break
             
         
         async with self.r.pubsub() as pubsub:
             await pubsub.subscribe("channel:1")
             future = asyncio.create_task(reader(pubsub))
-            await self.r.publish("channel:1", {"input" : "Hello"})
+            await self.r.publish("channel:1", json.dumps({"input" : "Hello"}))
             await future
     
-    @pytest.mark.skip()
     async def test_should_push(self):
         request1 : RequestDict = {"input" : "some value"}
         request2 : RequestDict = {"input" : "other value"}

@@ -20,8 +20,7 @@ async def get_payload_from_token(token : str) -> dict:
 async def verify_token(token : Annotated[str, Depends(scheme)]) -> dict:
     headers = jwt.get_unverified_headers(token)
     claims = jwt.get_unverified_claims(token)
-    print(f"headers : {headers}")
-    print(f"claims : {claims}")
+
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
