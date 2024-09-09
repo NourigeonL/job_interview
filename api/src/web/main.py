@@ -9,6 +9,8 @@ from storages.db.models import RequestPatch
 from common.exceptions import GenericError
 from uuid import UUID
 from pydantic import BaseModel, Field, field_validator
+from fastapi.middleware.cors import CORSMiddleware
+
 
 class RequestForm(BaseModel):
     requests : list[str] = Field(..., max_length=settings.BATCH_SIZE)
@@ -29,6 +31,14 @@ class RequestForm(BaseModel):
 app = FastAPI(lifespan=lifespan)
 
 app.add_exception_handler(GenericError, exception_handler)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/login/")
 async def log_in(login_form : LoginForm) -> Tokens:
