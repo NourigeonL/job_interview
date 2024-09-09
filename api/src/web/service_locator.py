@@ -17,23 +17,23 @@ class ServiceLocator:
         
     @property
     def authentication_service(self) -> IAuthenticationService:
-        service = self.__global_variables.get("authentication_service")
-        if not service:
+        try:
+            return self.__global_variables["authentication_service"]
+        except KeyError:
             raise ex.ServiceDoesNotExistError("Authentication Service Unavailable")
-        return service
     
     @property
     def request_service(self) -> RequestService:
-        service = self.__global_variables.get("request_service")
-        if not service:
+        try:
+            return self.__global_variables["request_service"]
+        except KeyError:
             raise ex.ServiceDoesNotExistError("Request Service Unavailable")
-        return service
     
     @property
     def crud_request(self) -> CRUDRequest:
-        crud = self.__global_variables.get("crud_request")
-        if not crud:
+        try:
+            return self.__global_variables["crud_request"]
+        except KeyError:
             raise ex.ServiceDoesNotExistError("CRUD Service Unavailable")
-        return crud
 
 service_locator = ServiceLocator()
