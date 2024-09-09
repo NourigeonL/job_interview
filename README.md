@@ -7,11 +7,11 @@
 - change the env variables in .docker.env file
 - run `docker-compose up -d`
 ### Step 3 (only first run): migrate the database
-1. In case you change the database configuration, update the `sqlalchemy.url=` variable in `alembic.ini` file (by default `sqlalchemy.url = postgresql+asyncpg://admin:admin@localhost/db`)
-2. create a temporary python virtual environment
-3. run 
+1. create a temporary python virtual environment
+2. create a .env file and set the necessary environmnent variables
+2. run 
     ```
-    pip install alembic sqlmodel asyncpg
+    pip install alembic sqlmodel asyncpg pydantic_settings
     alembic upgrade head
     ```
 ### Step 4: ?????

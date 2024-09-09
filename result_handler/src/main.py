@@ -46,7 +46,7 @@ async def process_responses(repo: RequestRepository, cache : RedisCacheStorage, 
         logger.info(f"{len(in_process_requests)} requests are being processed by the AIs")
         
 if __name__ == "__main__":
-    engine = create_async_engine(f"postgresql+asyncpg://{settings.POSTGRESSQL_USER}:{settings.POSTGRESQL_PASSWORD}@{settings.POSTGRESQL_HOST}/{settings.POSTGRESQL_DB}", echo=False)
+    engine = create_async_engine(settings.ASYNC_DATABASE_URI, echo=True)
     repo = RequestRepository(engine)
     try:
         asyncio.run(main(repo))
